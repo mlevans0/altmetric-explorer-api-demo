@@ -16,20 +16,13 @@
         let url = `https://www.altmetric.com/explorer/api/research_outputs?digest=8eb462d8b3366367355cd4f66688591a18b76eb4&filter%5Bsustainable_development_goals%5D%5B%5D=13&key=ce6dd62a46c2406c9af4c1b5a6ab2de1`      
        
         $(document).ready(function () {
-            getResearchOutputsAndRenderPage(url);
+            queryExplorerThenRenderPage(url);
         });
         
         $(function () {
             $('#btnSave').on('click', function (event) {
                 let customUrl = $("#url").val();
-                model = {
-                    "description": "",
-                    "publications": [],
-                    "publication-total": 0,
-                    "open-access": {},
-                    "total-pages": 0
-                };
-                getResearchOutputsAndRenderPage(customUrl);
+                queryExplorerThenRenderPage(customUrl);
                 $("#customize").modal("hide");
                 event.preventDefault();
         });
@@ -78,7 +71,10 @@
             </div>
             <div class="container-fluid py-3">
                 <h1 class="display-2">Altmetric</h1>
-                <p class="lead"></p>
+                <p class="lead query-description"></p>
+                <p id="query-description-placeholder" class="placeholder-glow">
+                    <span class="placeholder placeholder-lg w-100"></span>
+                </p>
                 <hr class="my-4">
                 <p class="fs-6">This is a simple example of how you can use the Explorer API to showcase your institutions attention.</p>
             </div>
@@ -129,7 +125,7 @@
                         </div>
                     </div>
                 </div>
-                <nav id="page" class="pagination pagination"></nav>
+                <nav id="pagination" class="pagination pagination"></nav>
             </div>
             <div class="col-8">
                 <div id="accessibility-placeholder" aria-hidden="true">

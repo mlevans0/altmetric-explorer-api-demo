@@ -135,7 +135,7 @@
 		   let $totalPage = Math.ceil(settings.size / settings.limit);
 		   let $toFirstTime = $totalPage>settings.pageShow?settings.pageShow:$totalPage;
 		   $(this).empty();
-		   $(this).append('<ul class="pagination"></ul>');
+		   $(this).append('<ul class="pagination justify-content-center flex-wrap"></ul>');
 		   $(this).drawPage({
 			   from: 1,
 			   to: $toFirstTime,

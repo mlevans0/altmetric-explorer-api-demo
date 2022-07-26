@@ -51,7 +51,8 @@ function renderChart(element, type, labels, data_label, data_datasets) {
 			}]
 		},
 		options: {
-			responsive: false,
+			responsive: true,
+			maintainAspectRatio: false
 		}
 	});
 }
@@ -66,7 +67,7 @@ function renderAccessibility(model) {
 		<br />
 		<br />
 		<div class="d-flex justify-content-center">
-			<canvas id="accessibility-graph" width="200" height="200"></canvas>
+			<canvas id="accessibility-graph" style="position: relative; width="200vw" height="200vh"></canvas>
 		</div>
 		<br />
 		<br />
@@ -90,7 +91,7 @@ function renderVisibilityAndSocietalImpact(model) {
 		<br />
 		<br/>
 		<div class="d-flex justify-content-center">
-			<canvas id="overall-mentions-graph" width="600" height="400"></canvas>
+			<canvas id="overall-mentions-graph" style="position: relative; width="600vw" height="400wh"></canvas>
 		</div>
 		<br />
 		<br />
@@ -125,7 +126,7 @@ function renderCollaborations(model) {
    		<br />
 		<br />
 		<div class="d-flex justify-content-center">
-			<canvas id="affiliations-graph" width="600" height="400"></canvas>
+			<canvas id="affiliations-graph" style="position: relative; width="600vw" height="400vh"></canvas>
 		</div>
 	`);
 
@@ -150,7 +151,7 @@ function renderFunders(model) {
 		<br />
 		<br />
 		<div class="d-flex justify-content-center">
-			<canvas id="funders-graph" width="600" height="400"></canvas>
+			<canvas id="funders-graph" style="position: relative; width="600" height="400"></canvas>
 		</div>
 	`);
 

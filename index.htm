@@ -16,6 +16,14 @@
         let url = `https://www.altmetric.com/explorer/api/research_outputs?digest=8eb462d8b3366367355cd4f66688591a18b76eb4&filter%5Bsustainable_development_goals%5D%5B%5D=13&key=ce6dd62a46c2406c9af4c1b5a6ab2de1`      
        
         $(document).ready(function () {
+            const sections = new Map([
+                ['accessibility','Accessibility'],
+                ['visibility','Visibility and societal impact'],
+                ['collaborations','Collaborations'],
+                ['funders','Funders']
+            ]);
+            renderPlaceholdersForPublications(3);
+            renderPlaceholdersForSections(sections);
             queryExplorerThenRenderPage(url);
         });
         
@@ -32,7 +40,7 @@
 </head>
 <body>
     <div class="container">
-        <div class="progress" style="height: 3px;">
+        <div class="progress sticky-top" style="height: 3px;">
             <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 1%"></div>
         </div>
         <div class="modal fade" id="customize" tabindex="-1" aria-hidden="true">
@@ -48,6 +56,7 @@
                                 <ul>
                                     <li>Log into the Altmetric Explorer</li>
                                     <li>Use the advanced search to create your customised query</li>
+                                    <li>Navigate to the <strong>Research Outputs</strong> tab</li>
                                     <li>Click on the <strong>Export this tab button</strong> and choose <strong>Open results in API</strong></li>
                                     <li>Copy the URL from the address bar</li>
                                 </ul>
@@ -66,12 +75,11 @@
         </div>
         <div class="p-3 mb-4 bg-light rounded-3">
             <div class="m-2">
-                <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal"
-                    data-bs-target="#customize">Customize</button>
+                <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#customize">Customize</button>
             </div>
             <div class="container-fluid py-3">
-                <h1 class="display-2">Altmetric</h1>
-                <p class="lead query-description"></p>
+                <h1 class="display-2">Altmetric Explorer API Demo</h1>
+                <p id="query-description" class="lead"></p>
                 <p id="query-description-placeholder" class="placeholder-glow">
                     <span class="placeholder placeholder-lg w-100"></span>
                 </p>
@@ -82,95 +90,10 @@
         <div class="row">
             <div class="col-4">
                 <h2>Publications</h2>
-                <div class="outputs">
-                    <div class="card" aria-hidden="true">
-                        <div class="card-body">
-                            <h5 class="card-title placeholder-glow">
-                                <span class="placeholder col-6"></span>
-                            </h5>
-                            <p class="card-text placeholder-glow">
-                                <span class="placeholder col-7"></span>
-                                <span class="placeholder col-4"></span>
-                                <span class="placeholder col-4"></span>
-                                <span class="placeholder col-7"></span>
-                                <span class="placeholder col-3"></span>
-                                <br />
-                                <span class="placeholder col-5"></span>
-                                <br /><br />
-                                <span class="placeholder col-8"></span>
-                                <br /><br />
-                                <span class="placeholder col-3 float-end"></span>
-                            </p>
-                        </div>
-                    </div>
-                    <br />
-                    <div class="card" aria-hidden="true">
-                        <div class="card-body">
-                            <h5 class="card-title placeholder-glow">
-                                <span class="placeholder col-6"></span>
-                            </h5>
-                            <p class="card-text placeholder-glow">
-                                <span class="placeholder col-7"></span>
-                                <span class="placeholder col-4"></span>
-                                <span class="placeholder col-4"></span>
-                                <span class="placeholder col-7"></span>
-                                <span class="placeholder col-3"></span>
-                                <br />
-                                <span class="placeholder col-5"></span>
-                                <br /><br />
-                                <span class="placeholder col-8"></span>
-                                <br /><br />
-                                <span class="placeholder col-3 float-end"></span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
+                <div id="publications"></div>
                 <nav id="pagination"></nav>
             </div>
-            <div class="col-8">
-                <div id="accessibility-placeholder" aria-hidden="true">
-                    <h2>Accessibility</h2>
-                    <p class="card-text placeholder-glow">
-                        <span class="placeholder col-11"></span>
-                        <span class="placeholder col-6"></span>
-                        <span class="placeholder col-5"></span>
-                        <span class="placeholder col-8"></span>
-                    </p>
-                </div>
-                <br />
-                <br />
-                <div id="visibility-placeholder" aria-hidden="true">
-                    <h2>Visibility and societal impact</h2>
-                    <p class="card-text placeholder-glow">
-                        <span class="placeholder col-11"></span>
-                        <span class="placeholder col-6"></span>
-                        <span class="placeholder col-5"></span>
-                        <span class="placeholder col-8"></span>
-                    </p>
-                </div>
-                <br />
-                <br />
-                <div id="collaborations-placeholder" aria-hidden="true">
-                    <h2>Collaboration</h2>
-                    <p class="card-text placeholder-glow">
-                        <span class="placeholder col-11"></span>
-                        <span class="placeholder col-6"></span>
-                        <span class="placeholder col-5"></span>
-                        <span class="placeholder col-8"></span>
-                    </p>
-                </div>
-                <br />
-                <br />
-                <div id="funders-placeholder" aria-hidden="true">
-                    <h2>Funders</h2>
-                    <p class="card-text placeholder-glow">
-                        <span class="placeholder col-11"></span>
-                        <span class="placeholder col-6"></span>
-                        <span class="placeholder col-5"></span>
-                        <span class="placeholder col-8"></span>
-                    </p>
-                </div>
-            </div>
+            <div id="sections" class="col-8"></div>
         </div>
     </div>
 </body>

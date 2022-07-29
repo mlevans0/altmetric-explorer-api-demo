@@ -239,7 +239,6 @@ function updatePagination(model) {
 }
 
 function renderPage(model) {
-	$("#query-description-placeholder").remove();
 	$("#query-description").text(model["description"]);
 	
 	renderAccessibility(model);
@@ -293,14 +292,32 @@ function renderPlaceholdersForSections(sections) {
 	  }
 }
 
+function togglePlaceholders(numberOfPublications) {
+	const sections = new Map([
+		['accessibility','Accessibility'],
+		['visibility','Visibility and societal impact'],
+		['collaborations','Collaborations'],
+		['funders','Funders']
+	]);
+	renderPlaceholdersForPublications(numberOfPublications);
+	renderPlaceholdersForSections(sections);
+}
+
 async function queryExplorerThenRenderPage(url) {
 	try {
 		$(".progress").show();
+		$("#pagination").hide();
+		$("#query-description").hide();
+		$("#query-description-placeholder").show();
+		togglePlaceholders(3);
 		const model = await makePagedRequest(url, convertToPublication);
 		renderPage(model);
 	} catch (error) {
 		alert(error);
 	} finally {
 		$(".progress").hide();
+		$("#pagination").show();
+		$("#query-description").show();
+		$("#query-description-placeholder").hide();
 	}
 }

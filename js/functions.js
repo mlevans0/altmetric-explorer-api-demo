@@ -78,6 +78,32 @@ function renderAccessibility(model) {
 	renderChart("accessibility-graph", "doughnut", ["Open access", "Non open access"], "# of Open Access", [model["open-access"].true.length, model["open-access"].false?.length || 0])
 }
 
+function renderSustainability(model) {
+	$("#sustainability-placeholder").empty();
+	$("#sustainability-placeholder").html(`
+		<h2>Sustainability development goals</h2>
+		<div class="mb-3">
+		The 2030 Agenda for Sustainable Development, adopted by all United Nations Member States in 2015, provides a shared blueprint for peace and prosperity for people and the planet, 
+		now and into the future. At its heart are the 17 Sustainable Development Goals (SDGs), which are an urgent call for action by all countries - developed and developing - in a global
+		partnership. They recognize that ending poverty and other deprivations must go hand-in-hand with strategies that improve health and education, reduce inequality, and spur economic growth –
+		all while tackling climate change and working to preserve our oceans and forests. Here is a breakdown of all research outputs grouped by the SDG goal.
+		</div>
+		<div class="d-flex justify-content-center mb-3">
+			<canvas id="sdg-breakdown-graph" style="position: relative; width="600vw" height="400wh"></canvas>
+		</div>
+	`);
+
+   model["sdg-breakdown"] = model.publications.flatMap(p => p.sdgs).reduce((result, current) => {
+   	if (result[current] == null) {
+		result[current] = 0;
+	}
+	result[current]++;
+	return result;
+   }, {});
+	
+	renderChart("sdg-breakdown-graph", "bar", Object.keys(model['sdg-breakdown']), 'Breakdown of SDGs', Object.values(model['sdg-breakdown']))
+}
+
 function renderVisibilityAndSocietalImpact(model) {
 	$("#visibility-placeholder").empty();
 	$("#visibility-placeholder").html(`
@@ -169,7 +195,7 @@ function convertToPublication(model, result) {
 	}
 	result.data.forEach(element => {
 		let institutional_authors = []
-		if (element.relationships.hasOwnProperty("institutional-authors")) {
+		if (element?.relationships?.hasOwnProperty("institutional-authors")) {
 			institutional_authors = element.relationships['institutional-authors'].map(x => {
 				let displayName = result.included.find(author => author.id == x.id).attributes.name
 				let name = displayName.split(",")
@@ -177,23 +203,32 @@ function convertToPublication(model, result) {
 			})
 		}
 		let affiliations = []
-		if (element.relationships.hasOwnProperty("affiliations")) {
+		if (element?.relationships?.hasOwnProperty("affiliations")) {
 			affiliations = element.relationships['affiliations'].map(x => {
 				return result.included.find(a => a.id == x.id).attributes.name
 			})
 		}
 		let funders = []
-		if (element.relationships.hasOwnProperty("funders")) {
+		if (element?.relationships?.hasOwnProperty("funders")) {
 			funders = element.relationships['funders'].map(x => {
 				return result.included.find(a => a.id == x.id).attributes.name
 			})
 		}
+		let sdgs = []
+		if (element?.relationships?.hasOwnProperty("sustainable-development-goals")) {
+			sdgs = element.relationships['sustainable-development-goals'].map(x => {
+				return result.included.find(a => a.id == x.id && a.type == 'sustainable-development-goal').attributes.name
+			})
+		}
+		console.log(sdgs)
+
 		model.publications.push({
 			"id": element.id,
 			"authors": institutional_authors,
 			"identifier": element.attributes.identifiers.hasOwnProperty("dois") ? element.attributes.identifiers.dois[0] : null,
 			"affiliations": affiliations,
 			"funders" : funders,
+			"sdgs" : sdgs,
 			"title": element.attributes.title,
 			"publication-date": element.attributes["publication-date"],
 			"open-access": element.attributes["oa-status"],
@@ -242,6 +277,7 @@ function renderPage(model) {
 	$("#query-description").text(model["description"]);
 	
 	renderAccessibility(model);
+	renderSustainability(model);
 	renderVisibilityAndSocietalImpact(model);
 	renderCollaborations(model);
 	renderFunders(model);
@@ -295,6 +331,7 @@ function renderPlaceholdersForSections(sections) {
 function togglePlaceholders(numberOfPublications) {
 	const sections = new Map([
 		['accessibility','Accessibility'],
+		['sustainability','Sustainable development goals'],
 		['visibility','Visibility and societal impact'],
 		['collaborations','Collaborations'],
 		['funders','Funders']
@@ -314,6 +351,8 @@ async function queryExplorerThenRenderPage(url) {
 		renderPage(model);
 	} catch (error) {
 		alert(error);
+		console.log(error);
+		throw (error);
 	} finally {
 		$(".progress").hide();
 		$("#pagination").show();
